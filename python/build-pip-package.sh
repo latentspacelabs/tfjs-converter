@@ -128,8 +128,10 @@ for PY_FILE in ${PY_FILES}; do
 done
 
 # Copy .json files under op_list
+
 OP_LIST_DIR="tensorflowjs/op_list"
 JSON_FILES=$(find -L "${SCRIPTS_DIR}/${OP_LIST_DIR}" -name '*.json')
+
 if [[ -z "${JSON_FILES}" ]]; then
   echo "ERROR: Failed to find any .json files in ${SCRIPTS_DIR}/${OP_LIST_DIR}"
   echo "You need to run 'yarn gen-json' first."
@@ -142,6 +144,8 @@ for JSON_FILE in ${JSON_FILES}; do
   echo "Copying JSON file: $(basename "${JSON_FILE}")"
   cp "${JSON_FILE}" "${TMP_DIR}/${OP_LIST_DIR}"
 done
+
+
 
 # Copy requirements.txt
 echo
@@ -171,7 +175,7 @@ fi
 
 # Create virtualenvs for python2 and python3; build (and test) the wheels inside
 # them.
-VENV_PYTHON_BINS="python2 python3"
+VENV_PYTHON_BINS="python3"
 for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
   if [[ -z "$(which "${VENV_PYTHON_BIN}")" ]]; then
     echo "ERROR: Unable to find ${VENV_PYTHON_BIN} on path."
@@ -183,7 +187,7 @@ for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
   source "${TMP_VENV_DIR}/bin/activate"
 
   echo
-  echo "Building wheel for ${VENV_PYTHON_BIN}: $(python --version 2>&1) ..."
+  echo "Building wheel for ${VENV_PYTHON_BIN}: $(python --version 3>&1) ..."
   echo
 
   pip install -r "${SCRIPTS_DIR}/requirements.txt"
@@ -191,7 +195,7 @@ for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
   pushd "${TMP_DIR}" > /dev/null
   echo
 
-  echo "Building wheel for $(python --version 2>&1) ..."
+  echo "Building wheel for $(python --version 3>&1) ..."
   echo
 
   python setup.py bdist_wheel
@@ -210,7 +214,7 @@ for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
   # Run test on install.
   if [[ "${RUN_TEST}" == "1" ]]; then
     echo
-    echo "Running test-on-install for $(python --version 2>&1) ..."
+    echo "Running test-on-install for $(python --version 3>&1) ..."
     echo
 
     pip uninstall -y tensorflowjs || \
@@ -227,7 +231,7 @@ for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
     pushd "${TEST_ON_INSTALL_DIR}" > /dev/null
 
     pip install "${WHEEL_PATH}"
-    echo "Successfully installed ${WHEEL_PATH} for $(python --version 2>&1)."
+    echo "Successfully installed ${WHEEL_PATH} for $(python --version 3>&1)."
     echo
 
     python test_pip_package.py
@@ -237,9 +241,9 @@ for VENV_PYTHON_BIN in ${VENV_PYTHON_BINS}; do
     rm -rf "${TEST_ON_INSTALL_DIR}"
 
     echo
-    echo "Test-on-install for $(python --version 2>&1) PASSED."
+    echo "Test-on-install for $(python --version 3>&1) PASSED."
     echo
-    echo "Your pip wheel for $(python --version 2>&1) is at:"
+    echo "Your pip wheel for $(python --version 3>&1) is at:"
     echo "  ${WHEEL_PATH}"
   fi
 
