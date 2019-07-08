@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2018 Google LLC. All Rights Reserved.
+ * Copyright 2019 Google LLC. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,13 @@
  * limitations under the License.
  * =============================================================================
  */
-export {GraphModel, loadGraphModel} from './executor/graph_model';
-export {deregisterOp, registerOp} from './operations/custom_op/register';
-export {GraphNode, OpExecutor} from './operations/types';
-export {version as version_converter} from './version';
+import * as tfc from '@tensorflow/tfjs-core';
+import {parseAndEvaluateSnippets} from '@tensorflow/tfjs-core/dist/scripts/test_snippets/util';
+
+import * as tfconv from '../src/index';
+
+const tf = {
+  ...tfconv,
+  ...tfc
+};
+parseAndEvaluateSnippets(tf);
